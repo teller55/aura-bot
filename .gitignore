@@ -40,3 +40,7 @@ Thumbs.db
 *.db
 *.db-wal
 *.db-shm
+aura.cfg
+src/Release/
+bncsutil/vc8_build/Release/
+Release/
