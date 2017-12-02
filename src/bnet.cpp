@@ -1742,10 +1742,11 @@ void CBNET::ProcessChatEvent(const CIncomingChatEvent* chatEvent)
 
           //
           // !GETGAMES
-          // !G
+          // !GGS
           //
 
           case HashCode("getgames"):
+		  case HashCode("ggs"):
           {
             if (m_Aura->m_CurrentGame)
               QueueChatCommand("Game [" + m_Aura->m_CurrentGame->GetDescription() + "] is in the lobby and there are " + to_string(m_Aura->m_Games.size()) + "/" + to_string(m_Aura->m_MaxGames) + " other games in progress", User, Whisper, m_IRC);

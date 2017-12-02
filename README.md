@@ -50,6 +50,10 @@ Building
 Windows users must use VS2015 or later. Visual Studio 2015 Community edition works.
 Neccessary .sln and .vcxproj files are provided. Before building, choose the Release configuration and Win32 or x64 as the platform.
 The binary shall be generated in the `..\aura-bot\aura\Release` folder.
+Notes:
+~Add $(VC_LibraryPath_x64) to the Library Directories
+~Add $(VC_IncludePath) to the Include Directories
+~Retarget to your Windows SDK version
 
 ### Linux
 

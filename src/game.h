@@ -49,6 +49,10 @@ class CGame
 {
 public:
   CAura* m_Aura;
+  std::string					classCallString;				  // Auto Class Call String
+  std::string					CC[12];							  // Auto Class Call Player Slot Call
+  std::string					CCstatic[12];					  // Auto Class Call Static Slot Number
+  bool							CCStarted;						  // Auto Class Call has been started or not
 
 protected:
   CTCPServer*                    m_Socket;                        // listening socket
@@ -92,6 +96,7 @@ protected:
   int64_t                        m_LastPlayerLeaveTicks;          // GetTicks when the most recent player left the game
   int64_t                        m_LastLagScreenResetTime;        // GetTime when the "lag" screen was last reset
   int64_t                        m_RandomSeed;                    // the random seed sent to the Warcraft III clients
+  uint32_t						 m_GameLoadedTime;				  // GetTime when the game was loaded
   uint32_t                       m_HostCounter;                   // a unique game number
   uint32_t                       m_EntryKey;                      // random entry key for LAN, used to prove that a player is actually joining from LAN
   uint32_t                       m_Latency;                       // the number of ms to wait between sending action packets (we queue any received during this time)
