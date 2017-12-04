@@ -1704,7 +1704,7 @@ void CGame::EventPlayerChatToHost(CGamePlayer* player, CIncomingChatPlayer* chat
         // so if Relay is already false (e.g. because the player is muted) then it cannot be forced back to true here
 
         EventPlayerBotCommand(player, Command, Payload);
-        Relay = false;
+        Relay = true;
       }
 
       if (Relay)
@@ -1797,7 +1797,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 
           vector<CGamePlayer*> SortedPlayers = m_Players;
           sort(begin(SortedPlayers), end(SortedPlayers), [](const CGamePlayer* a, const CGamePlayer* b) {
-            return a->GetPing(false) < b->GetPing(false);
+            return a->GetPing(false) > b->GetPing(false); //changed < to > to sort descending instead of ascending
           });
           string Pings;
 
