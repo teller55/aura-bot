@@ -1708,10 +1708,10 @@ void CBNET::ProcessChatEvent(const CIncomingChatEvent* chatEvent)
 
           //
           // !GETGAME
-          // !G
+          // !GG
           //
 
-          case HashCode("g"):
+          case HashCode("gg"):
           case HashCode("getgame"):
           {
             if (Payload.empty())
