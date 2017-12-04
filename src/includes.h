@@ -27,6 +27,9 @@
 #include <string>
 #include <cstdint>
 #include <chrono>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
 
 // time
 
@@ -34,6 +37,16 @@ inline int64_t GetTime()
 {
   const std::chrono::steady_clock::time_point time_now = std::chrono::steady_clock::now();
   return std::chrono::duration_cast<std::chrono::seconds>(time_now.time_since_epoch()).count();
+}
+
+inline std::string GetMyTime()
+{
+	auto now = std::chrono::system_clock::now();
+	auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+	std::stringstream ss;
+	ss << std::put_time(std::localtime(&in_time_t), "%T");
+	return ss.str();
 }
 
 inline int64_t GetTicks()
@@ -46,12 +59,14 @@ inline int64_t GetTicks()
 
 inline void Print(const std::string& message) // outputs to console
 {
-  std::cout << message << std::endl;
+	const std::string timMessage = "[" + GetMyTime() + "] " + message;
+	std::cout << timMessage << std::endl;
 }
 
 inline void Print(const char* message)
 {
-  std::cout << message << std::endl;
+	const std::string timMessage = "[" + GetMyTime() + "] " + message;
+	std::cout << timMessage << std::endl;
 }
 
 void Print2(const std::string& message); // outputs to console and irc
