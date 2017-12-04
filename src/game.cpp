@@ -2297,6 +2297,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 				CCStarted = true;
 				SendAllChat("Automated Class Caller Activated");
 			}
+			break;
 		}
 
 		//
@@ -2311,6 +2312,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 				CCStarted = false;
 				SendAllChat("Automated Class Caller Deactivated");
 			}
+			break;
 		}
 
         //
@@ -3408,6 +3410,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 			classCallString = CC[0] + "/" + CC[1] + "/" + CC[2] + "/" + CC[3] + "/" + CC[4] + "/" + CC[5] + "/" + CC[6] + "/" + CC[7] + "/" + CC[8];
 			SendAllChat(classCallString);
 		}
+		break;
 	}
 
     //
