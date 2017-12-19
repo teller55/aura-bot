@@ -1631,21 +1631,21 @@ void CGame::EventPlayerChatToHost(CGamePlayer* player, CIncomingChatPlayer* chat
 				  currentChar = int(myMsg[0]);
 			  }
 			  int requestedSlot = firstChar - 49;
-			  if (requestedSlot == myColour)
+			  if (requestedSlot == myColour || (player->GetName() == m_leader && m_Slots[requestedSlot].GetSlotStatus() == 2) )
 			  {
 				  if (myMsg.size() > 1)
 				  {
 					  std::string::iterator end_pos = std::remove(myMsg.begin(), myMsg.end(), '/');
 					  myMsg.erase(end_pos, myMsg.end());
-					  if (myMsg.size() > 12)
+					  if (myMsg.size() > 15)
 					  {
-						  myMsg.resize(12);
+						  myMsg.resize(15);
 					  }
-					  CC[myColour] = myMsg;
+					  CC[requestedSlot] = myMsg;
 				  }
 				  else
 				  {
-					  CC[myColour] = CCstatic[myColour];
+					  CC[requestedSlot] = CCstatic[requestedSlot];
 				  }
 				  classCallString = CC[0] + "/" + CC[1] + "/" + CC[2] + "/" + CC[3] + "/" + CC[4] + "/" + CC[5] + "/" + CC[6] + "/" + CC[7] + "/" + CC[8];
 				  SendAllChat(classCallString);
@@ -2284,6 +2284,33 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 
           break;
         }
+
+		//
+		// !LEADER
+		//
+
+		case HashCode("leader"):
+		{
+			if (Payload.empty() && m_leader.empty())
+			{
+				SendAllChat("A leader has not yet been designated.");
+			} else if(Payload.empty()) {
+				SendAllChat("The leader is: " + m_leader);
+			} else {
+				CGamePlayer*	LastMatch = nullptr;
+				uint32_t		Matches = GetPlayerFromNamePartial(Payload, &LastMatch);
+
+				if (Matches == 0) {
+					SendAllChat("Unable to set leader to [" + Payload + "]. No matches found.");
+				} else if (Matches == 1) {
+					m_leader = LastMatch->GetName();
+					SendAllChat("The leader is now: " + m_leader);
+				} else {
+					SendAllChat("Unable to set leader to [" + Payload + "]. Found more than one match.");
+				}
+			}
+			break;
+		}
 
 		//
 		// !STARTCC

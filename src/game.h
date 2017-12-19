@@ -53,6 +53,7 @@ public:
   std::string					CC[12];							  // Auto Class Call Player Slot Call
   std::string					CCstatic[12];					  // Auto Class Call Static Slot Number
   bool							CCStarted;						  // Auto Class Call has been started or not
+  std::string					m_leader;						  // Leader of the game
 
 protected:
   CTCPServer*                    m_Socket;                        // listening socket
