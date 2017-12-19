@@ -1083,6 +1083,12 @@ void CGame::EventPlayerDeleted(CGamePlayer* player)
     }
   }
 
+  // reset leader if they leave
+  if (IsLeader(player->GetName())) {
+	  SendAllChat("Your leader [" + m_leader + "] has left the game. You may select a new leader.");
+	  m_leader.clear();
+  }
+
   // update ACC when a player leaves
   if (CCStarted && m_GameLoaded)
   {
@@ -1631,7 +1637,7 @@ void CGame::EventPlayerChatToHost(CGamePlayer* player, CIncomingChatPlayer* chat
 				  currentChar = int(myMsg[0]);
 			  }
 			  int requestedSlot = firstChar - 49;
-			  if (requestedSlot == myColour || (player->GetName() == m_leader && m_Slots[requestedSlot].GetSlotStatus() == 2) )
+			  if (requestedSlot == myColour || (IsLeader(player->GetName()) && m_Slots[requestedSlot].GetSlotStatus() == 2) )
 			  {
 				  if (myMsg.size() > 1)
 				  {
@@ -1757,11 +1763,11 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 
   const uint64_t CommandHash = HashCode(Command);
 
-  if (player->GetSpoofed() && (AdminCheck || RootAdminCheck || IsOwner(User)))
+  if (player->GetSpoofed() && (AdminCheck || RootAdminCheck || IsOwner(User) || IsLeader(User)))
   {
     Print("[GAME: " + m_GameName + "] admin [" + User + "] sent command [" + Command + "] with payload [" + Payload + "]");
 
-    if (!m_Locked || RootAdminCheck || IsOwner(User))
+    if (!m_Locked || RootAdminCheck || IsOwner(User) || IsLeader(User))
     {
       /*****************
        * ADMIN COMMANDS *
@@ -2300,14 +2306,17 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 				CGamePlayer*	LastMatch = nullptr;
 				uint32_t		Matches = GetPlayerFromNamePartial(Payload, &LastMatch);
 
-				if (Matches == 0) {
-					SendAllChat("Unable to set leader to [" + Payload + "]. No matches found.");
-				} else if (Matches == 1) {
-					m_leader = LastMatch->GetName();
-					SendAllChat("The leader is now: " + m_leader);
-				} else {
-					SendAllChat("Unable to set leader to [" + Payload + "]. Found more than one match.");
-				}
+				if (m_leader.empty() || IsLeader(User) || RootAdminCheck) {
+					if (Matches == 0)
+						SendAllChat("Unable to set leader to [" + Payload + "]. No matches found.");
+					else if (Matches == 1) {
+						m_leader = LastMatch->GetName();
+						SendAllChat("The leader is now: " + m_leader);
+					} else 
+						SendAllChat("Unable to set leader to [" + Payload + "]. Found more than one match.");
+					
+				} else 
+					SendAllChat("Only the leader [" + m_leader + "] can set a new leader.");				
 			}
 			break;
 		}
@@ -3133,7 +3142,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
           if (!RootAdminCheck && !IsOwner(User))
             break;
 
-          SendAllChat("Game locked. Only the game owner and root admins can run game commands");
+          SendAllChat("Game locked. Only the game owner, leader, and root admins can run game commands");
           m_Locked = true;
           break;
         }
@@ -4727,6 +4736,15 @@ bool CGame::IsOwner(string name) const
   transform(begin(OwnerLower), end(OwnerLower), begin(OwnerLower), ::tolower);
 
   return name == OwnerLower;
+}
+
+bool CGame::IsLeader(string name) const
+{
+	string LeaderLower = m_leader;
+	transform(begin(name), end(name), begin(name), ::tolower);
+	transform(begin(LeaderLower), end(LeaderLower), begin(LeaderLower), ::tolower);
+
+	return name == LeaderLower;
 }
 
 bool CGame::IsReserved(string name) const

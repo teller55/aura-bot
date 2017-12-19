@@ -242,6 +242,7 @@ public:
   void AddToReserved(std::string name);
   void RemoveFromReserved(std::string name);
   bool IsOwner(std::string name) const;
+  bool IsLeader(std::string name) const;
   bool IsReserved(std::string name) const;
   bool IsDownloading() const;
   void StartCountDown(bool force);
