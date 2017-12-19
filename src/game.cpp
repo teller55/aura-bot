@@ -2301,7 +2301,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 			{
 				SendAllChat("A leader has not yet been designated.");
 			} else if(Payload.empty()) {
-				SendAllChat("The leader is: " + m_leader);
+				SendAllChat("Your leader is: [" + m_leader + "].");
 			} else {
 				CGamePlayer*	LastMatch = nullptr;
 				uint32_t		Matches = GetPlayerFromNamePartial(Payload, &LastMatch);
@@ -2311,7 +2311,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
 						SendAllChat("Unable to set leader to [" + Payload + "]. No matches found.");
 					else if (Matches == 1) {
 						m_leader = LastMatch->GetName();
-						SendAllChat("The leader is now: " + m_leader);
+						SendAllChat("Your leader is now: [" + m_leader + "].");
 					} else 
 						SendAllChat("Unable to set leader to [" + Payload + "]. Found more than one match.");
 					
@@ -3407,7 +3407,7 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
     else
     {
       Print("[GAME: " + m_GameName + "] admin command ignored, the game is locked");
-      SendChat(player, "Only the game owner and root admins can run game commands when the game is locked");
+      SendChat(player, "Only the game owner, leader, and root admins can run game commands when the game is locked");
     }
   }
   else
@@ -3458,6 +3458,21 @@ bool CGame::EventPlayerBotCommand(CGamePlayer* player, string& command, string& 
       SendChat(player, "Checked player [" + User + "]. Ping: " + (player->GetNumPings() > 0 ? to_string(player->GetPing(m_Aura->m_LCPings)) + "ms" : "N/A") + ", From: " + m_Aura->m_DB->FromCheck(ByteArrayToUInt32(player->GetExternalIP(), true)) + ", Admin: " + (AdminCheck || RootAdminCheck ? "Yes" : "No") + ", Owner: " + (IsOwner(User) ? "Yes" : "No") + ", Spoof Checked: " + (player->GetSpoofed() ? "Yes" : "No") + ", Realm: " + (player->GetJoinedRealm().empty() ? "LAN" : player->GetJoinedRealm()) + ", Reserved: " + (player->GetReserved() ? "Yes" : "No"));
       break;
     }
+
+	//
+	// !LEADER
+	//
+
+	case HashCode("leader"):
+	{
+		if (!IsLeader(User) && !AdminCheck && !IsOwner(User)) {
+			if (m_leader.empty())
+				SendAllChat("A leader has not yet been designated.");
+			else
+				SendAllChat("Your leader is: [" + m_leader + "].");
+		}
+		break;
+	}
 
     //
     // !STATS
