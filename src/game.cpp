@@ -815,7 +815,7 @@ void CGame::SendAll(const std::vector<uint8_t>& data)
 void CGame::SendChat(uint8_t fromPID, CGamePlayer* player, const string& message)
 {
   // send a private message to one player - it'll be marked [Private] in Warcraft 3
-
+	Print("[GAME: " + m_GameName + "] [Local] " + message);
   if (player)
   {
     if (!m_GameLoading && !m_GameLoaded)
